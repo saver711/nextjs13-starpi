@@ -35,6 +35,8 @@ type ApiPhoto = {
     name: string
     alternativeText?: string
     url: string
+    width: number
+    height: number
   }
 }
 

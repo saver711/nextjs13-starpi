@@ -1,11 +1,11 @@
 "use client"
 
-import LoadImage from "@/app/components/LoadImage"
-// import { usePostArticleGraph } from "@/app/hooks/use-post-article-graph"
 import { updateArticleRest } from "@/app/lib/api/articles/update-article-rest"
 import { NEXT_PUBLIC_API_URL } from "@/app/lib/shared"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { FormEvent, useEffect, useState, useTransition } from "react"
+import { AiFillDelete } from "react-icons/ai"
 
 type UpdateArticleFormProps = {
   currentTitle: string
@@ -58,6 +58,7 @@ export const UpdateArticleForm = ({
     setIsFetching(true)
     const formData = new FormData()
     formData.append("data", JSON.stringify({ ...values, photos: oldPhotosIds }))
+    // try catch here or better implementation, but it is not my main goal here
     if (photos) {
       for (let i = 0; i < photos.length; i++) {
         formData.append(`files.photos`, photos[i])
@@ -88,68 +89,86 @@ export const UpdateArticleForm = ({
   return (
     <>
       {editMode ? (
-        <form onSubmit={submitHandler}>
-          <h2>Update {currentTitle}</h2>
-          <button onClick={() => setEditMode((current) => !current)}>
+        <>
+          <button
+            className="rounded bg-red-600 px-6 py-3 inline-block"
+            onClick={() => setEditMode((current) => !current)}
+          >
             CANCEL
           </button>
-          <input
-            placeholder="title"
-            type="text"
-            value={title}
-            onChange={({ target: { value } }) => setTitle(value)}
-          />
-          <textarea
-            placeholder="description"
-            value={description}
-            onChange={({ target: { value } }) => setDescription(value)}
-          />
+          <form onSubmit={submitHandler}>
+            <h2 className="my-3">Update {currentTitle}</h2>
+            <input
+              placeholder="title"
+              type="text"
+              value={title}
+              onChange={({ target: { value } }) => setTitle(value)}
+            />
+            <textarea
+              className="block my-4"
+              placeholder="description"
+              value={description}
+              onChange={({ target: { value } }) => setDescription(value)}
+            />
 
-          {oldPhotos?.map(
-            ({ id, attributes: { url: src, alternativeText: alt } }) => (
-              <div key={id}>
-                <LoadImage
-                  alt={alt || ""}
-                  src={NEXT_PUBLIC_API_URL + src}
-                  width={200}
-                  height={200}
-                />
-                <span
-                  onClick={() =>
-                    setOldPhotos((current) =>
-                      current?.filter((photo) => photo.id !== id)
-                    )
-                  }
-                >
-                  DELETE
-                </span>
-              </div>
-            )
-          )}
+            <div className="grid grid-cols-4 gap-3">
+              {oldPhotos?.map(
+                ({
+                  id,
+                  attributes: { url, alternativeText: alt, width, height },
+                }) => (
+                  <div key={id} className="relative">
+                    <Image
+                      alt={alt || ""}
+                      src={NEXT_PUBLIC_API_URL + url}
+                      {...{ width, height }}
+                    />
+                    <button
+                      onClick={() =>
+                        setOldPhotos((current) =>
+                          current?.filter((photo) => photo.id !== id)
+                        )
+                      }
+                    >
+                      <AiFillDelete
+                        color="red"
+                        className="absolute top-3 end-3"
+                      />
+                    </button>
+                  </div>
+                )
+              )}
+            </div>
 
-          <hr />
-          <h3>Add new photos</h3>
-          <input
-            type="file"
-            multiple
-            onChange={({ target: { files } }) => setPhotos(files)}
-          />
+            <hr />
+            <h3 className="my-3">Add extra photos</h3>
+            {!!photos?.length && (
+              <p className="ms-3">{photos?.length} Photos</p>
+            )}
+            <input
+              type="file"
+              multiple
+              onChange={({ target: { files } }) => setPhotos(files)}
+            />
 
-          {!!photos?.length && <p>{photos?.length} Photos</p>}
-
-          <input
-            disabled={isMutating}
-            type="submit"
-            value={isMutating ? `LOADING...` : `SUBMIT`}
-            // disabled={loading}
-            className="disabled:cursor-not-allowed"
-          />
-          {/* {loading && "Sending"} */}
-          <br />
-          {/* {error && error.graphQLErrors.map((err) => err.extensions.error.message)} */}
-        </form>
+            <br />
+            <input
+              disabled={isMutating}
+              type="submit"
+              value={isMutating ? `LOADING...` : `SUBMIT`}
+              className="disabled:cursor-not-allowed rounded cursor-pointer mt-4 bg-slate-600 px-6 py-3 inline-block"
+            />
+            <br />
+            {/* {error && error.graphQLErrors.map((err) => err.extensions.error.message)} */}
+          </form>
+        </>
       ) : (
-        <button onClick={() => setEditMode((current) => !current)}>EDIT</button>
+        <button
+          className="rounded bg-slate-500 px-6 py-3 inline-block"
+          onClick={() => setEditMode((current) => !current)}
+        >
+          EDIT
+        </button>
       )}
     </>
   )

@@ -1,3 +1,4 @@
+// GQL
 type ArticleAttributes = {
   title: string
   description: string
@@ -23,6 +24,7 @@ type Article = {
   }
 }
 
+// REST
 type ArticleRest = {
     data: {
       id: number

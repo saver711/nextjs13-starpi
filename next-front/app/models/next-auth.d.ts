@@ -9,7 +9,7 @@ declare module "next-auth" {
     user?: {
       name: string
       email: string
-      picture: string
+      picture?: string
       jwt: string
       //   sub: string
       id: string
@@ -17,5 +17,16 @@ declare module "next-auth" {
     //   exp: number
     //   jti: string
     }
+  }
+
+  interface User extends DefaultUser {
+    jwt?:string
+  }
+
+  interface AdapterUser extends User {
+    id: string
+    email: string
+    emailVerified: Date | null
+    jwt?:string
   }
 }

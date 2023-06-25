@@ -26,13 +26,12 @@ export const CreateArticleForm = () => {
   const [photos, setPhotos] = useState<FileList | null>(null)
 
   const [isPending, startTransition] = useTransition()
-    const [isFetching, setIsFetching] = useState(false)
-    const isMutating = isFetching || isPending
+  const [isFetching, setIsFetching] = useState(false)
+  const isMutating = isFetching || isPending
 
   const values = { title, description }
 
-  const afterSuccessHandler = ()=>{
-
+  const afterSuccessHandler = () => {
     startTransition(() => {
       if (pathname === "/articles/create") {
         router.push("/articles")
@@ -60,12 +59,13 @@ export const CreateArticleForm = () => {
     }
     const formData = new FormData()
     formData.append("data", JSON.stringify(values))
+    // try catch here or better implementation, but it is not my main goal here
     if (photos) {
       for (let i = 0; i < photos.length; i++) {
         formData.append(`files.photos`, photos[i])
       }
       const data = await postArticleRest(formData)
-      if(data){
+      if (data) {
         afterSuccessHandler()
       }
       setIsFetching(false)
@@ -76,17 +76,16 @@ export const CreateArticleForm = () => {
       //     description,
       //   },
       // })
-      const data= await postArticleRest(formData)
+      const data = await postArticleRest(formData)
       if (data) {
         afterSuccessHandler()
       }
       setIsFetching(false)
     }
-    
   }
   return (
     <form onSubmit={submitHandler}>
-      <h2>Create article form</h2>
+      <h2 className="mb-3">Create article</h2>
 
       <input
         placeholder="title"
@@ -95,6 +94,7 @@ export const CreateArticleForm = () => {
         onChange={({ target: { value } }) => setTitle(value)}
       />
       <textarea
+        className="block my-3"
         placeholder="description"
         value={description}
         onChange={({ target: { value } }) => setDescription(value)}
@@ -106,15 +106,13 @@ export const CreateArticleForm = () => {
         multiple
         onChange={({ target: { files } }) => setPhotos(files)}
       />
-
+      <br />
       <input
         disabled={isMutating}
         type="submit"
         value={isMutating ? `LOADING...` : `SUBMIT`}
-        // disabled={loading}
-        className="disabled:cursor-not-allowed"
+        className="disabled:cursor-not-allowed rounded cursor-pointer mt-4 bg-slate-600 px-6 py-3 inline-block"
       />
-      {/* {loading && "Sending"} */}
       <br />
       {/* {error && error.graphQLErrors.map((err) => err.extensions.error.message)} */}
     </form>

@@ -1,22 +1,14 @@
 import Image from "next/image"
 import Link from "next/link"
-import { UserInfo } from "../user/userInfo"
-import { LogButton } from "../utils/LogButton"
-import { getSession } from "next-auth/react"
-import { authOptions } from "@/app/api/auth/authOptions"
-import { getServerSession } from "next-auth"
-
+import { LogButton } from "../utils/log-button"
+import { Username } from "../user/username"
 
 export const Navbar = async ({ fixed }: { fixed?: boolean }) => {
-
-  // ممكن استخدم دي عادي في اي سيرفر كمبوننت
-  const session = await getServerSession(authOptions)
-  console.log(`Navbar ~ session:`, session)
 
   return (
     <nav
       className={`flex justify-between items-center p-4 ${
-        fixed ? `fixed top-0 start-0 w-full z-50` : "bg-slate-700"
+        fixed ? `fixed top-0 start-0 w-full z-40` : "bg-slate-700 mb-10"
       }`}
     >
       <div className="flex items-center">
@@ -27,7 +19,8 @@ export const Navbar = async ({ fixed }: { fixed?: boolean }) => {
           width={70}
           height={70}
         />
-        <UserInfo />
+        <Username />
+        {/* <h4>{session?.user?.name}</h4> */}
       </div>
       <div className="flex">
         <ul className="flex [&>*:not(:last-child)]:me-4">

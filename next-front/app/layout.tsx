@@ -2,26 +2,9 @@ import { ApolloWrapper } from "@/app/lib/apollo-wrapper"
 import "./globals.css"
 import { Inter } from "next/font/google"
 import { AuthProvider } from "./components/providers/auth-provider"
-import { Navbar } from "./components/navbar/navbar"
-import { headers } from "next/headers"
-import { Session } from "next-auth"
-
+import { AppLoading } from "./components/utils/app-loading"
 
 // export const dynamic = "force-dynamic"
-
-// GET SESSION FROM STRAPI DIRECTLY
-// async function getSession(cookie: string): Promise<Session> {
-//   const response = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/session`, {
-//     headers: {
-//       cookie,
-//     },
-//   })
-
-//   const session = await response.json()
-
-//   return Object.keys(session).length > 0 ? session : null
-// }
-
 
 const inter = Inter({ subsets: ["latin"], fallback: ["serif"] })
 export const metadata = {
@@ -36,17 +19,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
-  // const session = await getSession(headers().get("cookie") ?? "")
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider
-        // session={session}
-        >
+        <AuthProvider>
+          <AppLoading />
+          {/* TO USE GRAPHQL, although it is not a good option with nextjs */}
           {/* <ApolloWrapper> */}
-          {/* <Navbar/> */}
-          <main>{children}</main>
+          {children}
           {/* </ApolloWrapper> */}
         </AuthProvider>
       </body>

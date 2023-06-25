@@ -1,12 +1,16 @@
-// i needed it with qgl
+// we needed it with qgl
 //  "use client"
-import LoadImage from "@/app/components/LoadImage"
+import { LoadImage } from "@/app/components/load-image"
 import { fetchArticlesRest } from "@/app/lib/api/articles/fetch-articles-rest"
 import { NEXT_PUBLIC_API_URL } from "@/app/lib/shared"
 import { Metadata } from "next"
 import { UpdateArticleForm } from "../components/update-article-form"
 
 type ArticlePageProps = { params: { id: string } }
+
+// حل مؤقت لمشكلة
+// Dynamic server usage: headers
+// export const dynamic = "force-static"
 
 export const generateMetadata = async ({
   params: { id },
@@ -49,24 +53,23 @@ const ArticlePage = async ({ params: { id } }: ArticlePageProps) => {
       attributes: { description, photos, title },
     },
   }: ArticleRest = await fetchArticlesRest(+id)
-  
+
   return (
     <div>
-      <h2>{title}</h2>
-      <p>{description}</p>
-      {photos &&
-        photos?.data?.map(
-          ({ id, attributes: { url: src, alternativeText: alt } }) => (
-            <LoadImage
-              key={id}
-              alt={alt || ""}
-              src={NEXT_PUBLIC_API_URL + src}
-              width={200}
-              height={200}
-
-            />
-          )
-        )}
+      {photos && (
+        <div className="grid grid-cols-4 gap-3">
+          {photos?.data?.map(
+            ({ id, attributes: { url: src, alternativeText: alt } }) => (
+              <div key={id}>
+                <LoadImage alt={alt} src={NEXT_PUBLIC_API_URL + src} />
+              </div>
+            )
+            )}
+        </div>
+      )}
+      <h2 className="mt-4">Title: {title}</h2>
+      <p>Description: {description}</p>
+      <hr className="my-6" />
       <UpdateArticleForm
         currentDescription={description}
         currentTitle={title}

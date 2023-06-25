@@ -1,5 +1,5 @@
+import { LoadImage } from "@/app/components/load-image"
 import { NEXT_PUBLIC_API_URL } from "@/app/lib/shared"
-import Image from "next/image"
 import Link from "next/link"
 
 type ArticleCardProps = {
@@ -19,10 +19,17 @@ export const ArticleCard = ({
   const alt = photo?.attributes.alternativeText || "next-front"
 
   return (
-    <Link href={`/articles/${id}`}>
-      <h2>{title}</h2>
-      <p>{description}</p>
-      {src && <Image alt={alt} src={src} width={200} height={200} style={{height: "auto", width: "auto"}} />}
+    <Link
+      href={`/articles/${id}`}
+      className="p-8 bg-slate-600 rounded-md hover:bg-slate-500"
+    >
+      {src && (
+        <div className="mb-3">
+          <LoadImage src={src} alt={alt} />
+        </div>
+      )}
+      <h2>Title: {title}</h2>
+      <p>Description: {description}</p>
     </Link>
   )
 }
